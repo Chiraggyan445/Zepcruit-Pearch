@@ -78,7 +78,7 @@ function PromptBox({ role, setRole, experience, setExperience, location, setLoca
             <span>with skills such as</span>
           </div>
           <div className="prompt-line">
-            <input className="inline-input skills-input" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="User Research, Prototyping, Wireframing" />
+            <input className="inline-input skills-input" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="Skills" />
           </div>
         </div>
         <hr className="prompt-divider" />

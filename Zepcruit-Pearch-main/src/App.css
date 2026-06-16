@@ -101,9 +101,9 @@ body { font-family: 'Inter', 'Segoe UI', sans-serif; background: #fff; color: #1
 }
 .inline-input::placeholder { color: #b7b0a8; font-style: italic; }
 .inline-input:focus { border-bottom: 2px solid #ff6b1a; }
-.role-input { width: 120px; }
-.exp-input { width: 100px; }
-.small-input { width: 55px; }
+.role-input { width: 150px; }
+.exp-input { width: 120px; }
+.small-input { width: 130px; }
 .location-input { width: 130px; }
 .degree-input { width: 120px; }
 .skills-input { width: 290px; }
