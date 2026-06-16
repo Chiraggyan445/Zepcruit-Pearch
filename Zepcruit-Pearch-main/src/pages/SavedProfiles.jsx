@@ -21,16 +21,46 @@ const PLACEHOLDER_WHY_MATCH = [
   { label: "No design degree", ok: false },
 ];
 
-const getSkills = (candidate) =>
-  candidate.skills?.length ? candidate.skills : PLACEHOLDER_SKILLS;
-const getWhyMatch = (candidate) =>
-  candidate.whyMatch?.length ? candidate.whyMatch : PLACEHOLDER_WHY_MATCH;
-const getMatchLevel = (candidate) =>
-  candidate.matchLevel || candidate.priority || "Best Fit";
+const getSkills = (candidate) => {
+  const tags = [];
+
+  if (candidate.searchedIndustry)
+    tags.push(candidate.searchedIndustry);
+
+  if (candidate.searchedKeywords) {
+    tags.push(
+      ...candidate.searchedKeywords
+        .split(",")
+        .map(k => k.trim())
+        .filter(Boolean)
+        .slice(0, 4)
+    );
+  }
+
+  return tags;
+};
+const getWhyMatch = (candidate) => {
+  if (candidate.insights?.length) {
+    return candidate.insights.map(i => ({
+      label: i.short_rationale,
+      ok: i.match_level !== "low"
+    }));
+  }
+
+  return [];
+};
+const getMatchLevel = (candidate) => {
+  const score = candidate.matchScore || candidate.score || 0;
+
+  if (score >= 80) return "Best Fit";
+  if (score >= 60) return "Strong Match";
+  if (score >= 30) return "Meets Expectations";
+
+  return "Low Match";
+};
 const getExperienceLabel = (candidate) =>
   candidate.experience || candidate.experienceLabel || "2+ years";
 
-/* Saved-timestamp label, e.g. "Saved Jun 10, 2025 · 9:42 AM" */
 const getSavedLabel = (candidate) => {
   const raw = candidate.savedAt || candidate.saved_at;
   if (!raw) return candidate.savedLabel || null;
@@ -644,6 +674,7 @@ function SavedProfiles() {
             </div>
           ) : (
             filteredCandidates.map((candidate) => {
+              console.log("Saved candidate:", candidate);
               const isSelected = selectedCandidate && getCandidateId(selectedCandidate) === getCandidateId(candidate);
               const savedLabel = getSavedLabel(candidate);
               const skills = getSkills(candidate);

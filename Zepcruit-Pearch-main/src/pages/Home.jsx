@@ -54,22 +54,22 @@ function UnlockedIcon({ active = false }) {
 }
 
 /* ── PROMPT COMPONENT ── */
-function PromptBox({ role, setRole, experience, setExperience, location, setLocation, degree, setDegree, skills, setSkills, limit, setLimit, mustHaveKeywords, setMustHaveKeywords, handleSearch, loading, isLoggedIn, setShowLogin }) {
+function PromptBox({ role, setRole, experience, setExperience, location, setLocation, degree, setDegree, skills, setSkills, limit, setLimit, mustHaveKeywords, setMustHaveKeywords, handleSearch, loading, isLoggedIn, setShowLogin, industry, setIndustry }) {
   return (
     <div className="prompt-wrapper">
       <div className="prompt-box">
         <div className="prompt-text">
           <div className="prompt-line">
             <span>I am looking for a</span>
-            <input className="inline-input role-input" value={role} onChange={(e) => setRole(e.target.value)} placeholder="UX Designer" />
+            <input className="inline-input role-input" value={role} onChange={(e) => setRole(e.target.value)} placeholder="Job Title" />
             <span>with experience of</span>
-            <input className="inline-input exp-input" value={experience} onChange={(e) => setExperience(e.target.value)} placeholder="2 - 3 years" />
+            <input className="inline-input exp-input" value={experience} onChange={(e) => setExperience(e.target.value)} placeholder="Min-Max years" />
           </div>
           <div className="prompt-line">
             <span>in</span>
-            <input className="inline-input small-input" placeholder="B2C" />
+            <input className="inline-input small-input" value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="Industry" />industry,
             <span>who is based in</span>
-            <input className="inline-input location-input" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Mumbai, Pune" />
+            <input className="inline-input location-input" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />
             <span>with an</span>
           </div>
           <div className="prompt-line">
@@ -84,7 +84,7 @@ function PromptBox({ role, setRole, experience, setExperience, location, setLoca
         <hr className="prompt-divider" />
         <div className="prompt-bottom-row">
           <div className="prompt-bottom-left">
-            <label className="prompt-field-label">Must-have keywords</label>
+            <label className="prompt-field-label">Other Attributes or Keywords</label>
             <div className="keywords-textarea-wrap">
               <textarea className="keywords-textarea" value={mustHaveKeywords} onChange={(e) => { if (e.target.value.length <= 200) setMustHaveKeywords(e.target.value); }} placeholder="Figma, Design system, Collaboration" rows={3} />
               <span className="keyword-char-count">{mustHaveKeywords.length}/200</span>
@@ -415,7 +415,7 @@ function Home() {
   const [error, setError]           = useState("");
   const [isSignup, setIsSignup]     = useState(false);
   const [name, setName]             = useState("");
-  const [savedJobs, setSavedJobs]   = useState([]);
+  const [, setSavedJobs]   = useState([]);
 
   const [searched, setSearched] = useState(localStorage.getItem("search_completed") === "true");
   const [results, setResults]   = useState([]);
@@ -443,6 +443,7 @@ function Home() {
   const [location, setLocation]                 = useState("");
   const [degree, setDegree]                     = useState("");
   const [skills, setSkills]                     = useState("");
+  const [industry, setIndustry]                 = useState("");
   const [mustHaveKeywords, setMustHaveKeywords] = useState("");
   const navigate = useNavigate();
 
@@ -544,6 +545,7 @@ function Home() {
       setDegree(localStorage.getItem("search_degree") || "");
       setSkills(localStorage.getItem("search_skills") || "");
       setMustHaveKeywords(localStorage.getItem("search_keywords") || "");
+      setIndustry(localStorage.getItem("search_industry") || "");
       setSearched(true);
       const savedSelected = JSON.parse(localStorage.getItem("selected_candidate"));
       if (savedSelected) setSelected(savedSelected);
@@ -575,11 +577,41 @@ function Home() {
   useEffect(() => { if (!isLoggedIn) setSearched(false); }, [isLoggedIn]);
 
   const handleSearch = async () => {
-    const query = `I am looking for a ${role} with ${experience} who is based in ${location}, with education ${degree} with skills such as ${skills} ${mustHaveKeywords ? `Must-have keywords: ${mustHaveKeywords}` : ""}`;
+    const query = `
+Role: ${role}
+Experience: ${experience}
+Industry: ${industry}
+Location: ${location}
+Education: ${degree}
+Skills: ${skills}
+Other Attributes: ${mustHaveKeywords}
+`;
     if (!query.trim()) return;
     setLoading(true); setSearched(true); setResults([]); setSelected(null);
     try {
-      const res  = await fetch("https://zepcruit-backend.onrender.com/search", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ query, limit }) });
+      console.log("Limit selected:", limit);
+
+  console.log({
+    role,
+    experience,
+    industry,
+    location,
+    degree,
+    skills,
+    mustHaveKeywords,
+    limit
+  });
+      const res  = await fetch("https://zepcruit-backend.onrender.com/search", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
+  query,
+  role,
+  experience,
+  industry,
+  location,
+  degree,
+  skills,
+  mustHaveKeywords,
+  limit
+}) });
       const data = await res.json();
       const apiResults = data?.search_results || [];
       const formatted = apiResults.map((item) => {
@@ -612,6 +644,7 @@ function Home() {
       localStorage.setItem("search_degree", degree);
       localStorage.setItem("search_skills", skills);
       localStorage.setItem("search_keywords", mustHaveKeywords);
+      localStorage.setItem("search_industry", industry);
       localStorage.setItem("search_completed", "true");
     } catch (err) { console.error(err); }
     setLoading(false);
@@ -735,7 +768,7 @@ function Home() {
       <div className="hero">
         <h1 className="hero-title">Find the <span>best candidates</span></h1>
         <p className="hero-subtitle">Describe your ideal candidate and we'll do the rest</p>
-        <PromptBox {...{ role, setRole, experience, setExperience, location, setLocation, degree, setDegree, skills, setSkills, limit, setLimit, mustHaveKeywords, setMustHaveKeywords, handleSearch, loading, isLoggedIn, setShowLogin }} />
+        <PromptBox {...{ role, setRole, experience, setExperience, location, setLocation, degree, setDegree, skills, setSkills, limit, setLimit, mustHaveKeywords, setMustHaveKeywords, handleSearch, loading, isLoggedIn, setShowLogin, industry, setIndustry }} />
       </div>
 
       {/* ── RESULTS ── */}
