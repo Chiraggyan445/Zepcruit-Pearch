@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/calculator",
+      "destination": "https://zepcruit-calculator.vercel.app"
+    },
+    {
+      "source": "/calculator/:path*",
+      "destination": "https://zepcruit-calculator.vercel.app/:path*"
+    }
+  ]
+}
