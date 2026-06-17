@@ -7,6 +7,10 @@
     {
       "source": "/calculator/:path*",
       "destination": "https://zepcruit-calculator.vercel.app/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
