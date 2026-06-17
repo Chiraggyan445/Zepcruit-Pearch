@@ -5,6 +5,11 @@ import dotenv from "dotenv";
 import mysql from "mysql2";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -296,6 +301,27 @@ error:err.message
 
 }
 
+});
+
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// Fallback: serve index.html for all non-API routes
+// This fixes the 404 on reload for client-side routes
+app.get('*', (req, res) => {
+  // Don't catch API routes
+  if (req.path.startsWith('/api') || 
+      req.path.startsWith('/search') ||
+      req.path.startsWith('/save-job') ||
+      req.path.startsWith('/saved-jobs') ||
+      req.path.startsWith('/delete-job') ||
+      req.path.startsWith('/register') ||
+      req.path.startsWith('/login') ||
+      req.path.startsWith('/unlock-contact')) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  
+  // Serve index.html for all other routes (React Router will handle them)
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 /* ================= START SERVER ================= */
