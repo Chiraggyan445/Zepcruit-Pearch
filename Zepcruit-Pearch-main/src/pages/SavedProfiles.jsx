@@ -11,7 +11,6 @@ const getCandidateKey = (candidate) => {
   return `${candidate.name}||${candidate.title}||${candidate.location}`;
 };
 
-/* ── Placeholder match data (wire to backend later) ── */
 const PLACEHOLDER_SKILLS = ["Figma", "Research", "Wireframing", "B2C"];
 const PLACEHOLDER_WHY_MATCH = [
   { label: "Location match (Pune)", ok: true },
@@ -23,41 +22,37 @@ const PLACEHOLDER_WHY_MATCH = [
 
 const getSkills = (candidate) => {
   const tags = [];
-
-  if (candidate.searchedIndustry)
-    tags.push(candidate.searchedIndustry);
-
+  if (candidate.searchedIndustry) tags.push(candidate.searchedIndustry);
   if (candidate.searchedKeywords) {
     tags.push(
       ...candidate.searchedKeywords
         .split(",")
-        .map(k => k.trim())
+        .map((k) => k.trim())
         .filter(Boolean)
         .slice(0, 4)
     );
   }
-
   return tags;
 };
+
 const getWhyMatch = (candidate) => {
   if (candidate.insights?.length) {
-    return candidate.insights.map(i => ({
+    return candidate.insights.map((i) => ({
       label: i.short_rationale,
-      ok: i.match_level !== "low"
+      ok: i.match_level !== "low",
     }));
   }
-
   return [];
 };
+
 const getMatchLevel = (candidate) => {
   const score = candidate.matchScore || candidate.score || 0;
-
   if (score >= 80) return "Best Fit";
   if (score >= 60) return "Strong Match";
   if (score >= 30) return "Meets Expectations";
-
   return "Low Match";
 };
+
 const getExperienceLabel = (candidate) =>
   candidate.experience || candidate.experienceLabel || "2+ years";
 
@@ -71,7 +66,6 @@ const getSavedLabel = (candidate) => {
   return `Saved ${date} · ${time}`;
 };
 
-/* ── ZepCoin icon (same as Home) ── */
 function ZepCoinIcon({ size = 22 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -82,7 +76,6 @@ function ZepCoinIcon({ size = 22 }) {
   );
 }
 
-/* ── Avatar initials fallback (pink circle like Image 1) ── */
 function AvatarInitials({ name, size = 46 }) {
   const initials = name ? name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase() : "?";
   const colors = ["#E879A0", "#A78BFA", "#60A5FA", "#34D399", "#FB923C", "#F472B6", "#818CF8"];
@@ -94,10 +87,8 @@ function AvatarInitials({ name, size = 46 }) {
   );
 }
 
-/* ── Filled LinkedIn badge (blue, like Image 1) ── */
 function LinkedInBadgeFilled({ slug, size = 15 }) {
   if (!slug) {
-    // still show the badge per design; non-link
     return (
       <span style={{ width: size, height: size, borderRadius: "3px", background: "#0A66C2", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
         <svg width={size * 0.62} height={size * 0.62} viewBox="0 0 24 24" fill="#fff">
@@ -116,7 +107,6 @@ function LinkedInBadgeFilled({ slug, size = 15 }) {
   );
 }
 
-/* ── Skill tag chip ── */
 function SkillTag({ label }) {
   return (
     <span style={{ fontSize: "11px", fontWeight: 500, color: "#4b5563", background: "#f3f4f6", border: "1px solid #e5e7eb", borderRadius: "20px", padding: "3px 11px", whiteSpace: "nowrap" }}>
@@ -125,7 +115,6 @@ function SkillTag({ label }) {
   );
 }
 
-/* ── Why Match row (green check / red x) ── */
 function WhyMatchRow({ label, ok }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "2px 0" }}>
@@ -144,7 +133,6 @@ function WhyMatchRow({ label, ok }) {
   );
 }
 
-/* ── Unlock confirm modal ── */
 function UnlockModal({ candidate, onConfirm, onCancel, coins }) {
   if (!candidate) return null;
   const canAfford = coins >= UNLOCK_COST;
@@ -153,27 +141,22 @@ function UnlockModal({ candidate, onConfirm, onCancel, coins }) {
     <div className="modal-overlay" onClick={onCancel}>
       <div className="unlock-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-btn" onClick={onCancel}>×</button>
-
         <div className="unlock-modal-badge-row">
           <span className="unlock-priority-badge">{priorityLabel}</span>
         </div>
-
         <div className="unlock-modal-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F26419" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
         </div>
-
         <h3 className="unlock-modal-title">Unlock Contact Details</h3>
         <p className="unlock-modal-desc">
           <strong>{candidate.name}</strong>'s contact info will be added permanently to your account.
         </p>
-
         {!canAfford && (
           <p className="unlock-modal-error">Insufficient ZepCoins. You need {UNLOCK_COST} coins.</p>
         )}
-
         <button
           className={`unlock-confirm-btn ${!canAfford ? "unlock-confirm-btn--disabled" : ""}`}
           onClick={canAfford ? onConfirm : undefined}
@@ -193,7 +176,6 @@ function UnlockModal({ candidate, onConfirm, onCancel, coins }) {
   );
 }
 
-/* ── Green check (unlocked rows) ── */
 function ContactCheck() {
   return (
     <span className="rp-ci-check">
@@ -204,7 +186,6 @@ function ContactCheck() {
   );
 }
 
-/* ── About with read more ── */
 function SummarySection({ text }) {
   const [expanded, setExpanded] = useState(false);
   const SHORT = 180;
@@ -222,7 +203,6 @@ function SummarySection({ text }) {
   );
 }
 
-/* ── Timeline (connected purple dots) ── */
 function Timeline({ items }) {
   return (
     <div className="rp-timeline">
@@ -261,7 +241,7 @@ function SavedProfiles() {
     return new Set(stored);
   });
 
-  const [activeSection, setActiveSection] = useState(null); // "saved" | "unlocked" | null
+  const [activeSection, setActiveSection] = useState(null);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("saved_candidate_folders")) || [];
@@ -321,7 +301,6 @@ function SavedProfiles() {
     }
   };
 
-  /* ── Unlock flow ── */
   const handleRequestUnlock = (candidate) => setUnlockTarget(candidate);
 
   const handleConfirmUnlock = async () => {
@@ -351,12 +330,11 @@ function SavedProfiles() {
       const times = JSON.parse(localStorage.getItem("unlock_times") || "{}");
       times[candidateKey] = { at: new Date().toISOString(), name: unlockTarget.name, avatar: unlockTarget.avatar || null };
       localStorage.setItem("unlock_times", JSON.stringify(times));
-    } catch { /* ignore */ }
+    } catch { }
     setZepCoins((c) => Math.max(0, c - UNLOCK_COST));
     setUnlockTarget(null);
   };
 
-  /* ── Build timeline arrays ── */
   const buildExperience = (cand) => {
     const list = cand.fullProfile?.experiences || cand.fullProfile?.experience_list || [];
     return list.map((exp) => {
@@ -384,7 +362,6 @@ function SavedProfiles() {
     });
   };
 
-  /* ── Unlocked Contacts ── */
   const [unlockedView, setUnlockedView] = useState(null);
   const [profileSearch, setProfileSearch] = useState("");
 
@@ -428,6 +405,7 @@ function SavedProfiles() {
   } else if (activeSection === "saved") {
     sourceCandidates = activeFolder?.candidates || [];
   }
+
   const filteredCandidates = sourceCandidates.filter((c) =>
     c.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -439,21 +417,10 @@ function SavedProfiles() {
   const headerCount = filteredCandidates.length;
   const headerNoun = activeSection === "unlocked" ? "unlocked candidates" : "saved candidates";
 
-  const S = {
-    root: { display: "flex", height: "100vh", background: "#f8f9fa", fontFamily: "'Inter','Segoe UI',sans-serif", overflow: "hidden", color: "#1a1a1a" },
-    iconSidebar: { width: "44px", background: "#fff", borderRight: "1px solid #ebebeb", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "14px", gap: "4px", flexShrink: 0 },
-    iconBtn: { width: "36px", height: "36px", borderRadius: "8px", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", color: "#9ca3af" },
-    iconBtnActive: { width: "36px", height: "36px", borderRadius: "8px", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: "#fff3ec", color: "#F26419" },
-    folderSidebar: { width: "238px", background: "#fff", borderRight: "1px solid #ebebeb", display: "flex", flexDirection: "column", flexShrink: 0 },
-    folderHeader: { padding: "14px 14px 8px" },
-    folderLabel: { fontSize: "10px", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 },
-    main: { flex: 1, display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden" },
-    mainHeader: { background: "#fff", borderBottom: "1px solid #ebebeb", padding: "16px 28px 14px" },
-    mainTitle: { margin: 0, fontSize: "22px", fontWeight: 700, color: "#111827" },
-    mainSub: { margin: "3px 0 0", fontSize: "13px", color: "#6b7280" },
-    searchBar: { background: "#fff", borderBottom: "1px solid #ebebeb", padding: "10px 28px", display: "flex", gap: "16px", alignItems: "center" },
-    candidateList: { flex: 1, overflowY: "auto", padding: "16px 28px", display: "flex", flexDirection: "column", gap: "12px" },
-  };
+  const isUnlocked = selectedCandidate ? unlockedKeys.has(getCandidateKey(selectedCandidate)) : false;
+  const phone = selectedCandidate?.fullProfile?.phone_numbers?.[0];
+  const emailVal = selectedCandidate?.fullProfile?.best_personal_email;
+  const linkedinSlug = selectedCandidate?.fullProfile?.linkedin_slug;
 
   const LinkedInBadge = ({ slug }) =>
     slug ? (
@@ -462,33 +429,61 @@ function SavedProfiles() {
       </a>
     ) : null;
 
-  const isUnlocked = selectedCandidate ? unlockedKeys.has(getCandidateKey(selectedCandidate)) : false;
-  const phone = selectedCandidate?.fullProfile?.phone_numbers?.[0];
-  const emailVal = selectedCandidate?.fullProfile?.best_personal_email;
-  const linkedinSlug = selectedCandidate?.fullProfile?.linkedin_slug;
-
   return (
-    <div style={S.root}>
+    /*
+     * ROOT: full-viewport flex row, no overflow on the container itself.
+     * Each column manages its own scrolling independently.
+     */
+    <div style={{
+      display: "flex",
+      height: "100vh",
+      overflow: "hidden",           /* prevent root from scrolling */
+      background: "#f8f9fa",
+      fontFamily: "'Inter','Segoe UI',sans-serif",
+      color: "#1a1a1a",
+    }}>
 
-      {/* Icon sidebar */}
-      <div style={S.iconSidebar}>
-        <button title="Home" onClick={() => navigate("/")} style={S.iconBtn}>
+      {/* ── Icon sidebar ── */}
+      <div style={{
+        width: "44px",
+        flexShrink: 0,
+        background: "#fff",
+        borderRight: "1px solid #ebebeb",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        paddingTop: "14px",
+        gap: "4px",
+        height: "100vh",             /* full height */
+        overflowY: "auto",
+      }}>
+        <button title="Home" onClick={() => navigate("/")} style={{ width: "36px", height: "36px", borderRadius: "8px", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", color: "#9ca3af" }}>
           <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
         </button>
-        <button title="Saved" style={S.iconBtnActive}>
+        <button title="Saved" style={{ width: "36px", height: "36px", borderRadius: "8px", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: "#fff3ec", color: "#F26419" }}>
           <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
           </svg>
         </button>
       </div>
 
-      {/* Folder sidebar */}
-      <div style={S.folderSidebar}>
-        <div style={S.folderHeader}>
-          <p style={S.folderLabel}>Saved Profiles</p>
+      {/* ── Folder sidebar ── */}
+      <div style={{
+        width: "238px",
+        flexShrink: 0,
+        background: "#fff",
+        borderRight: "1px solid #ebebeb",
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",             /* full height */
+        overflowY: "auto",           /* scroll within column */
+      }}>
+        <div style={{ padding: "14px 14px 8px" }}>
+          <p style={{ fontSize: "10px", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>Saved Profiles</p>
         </div>
+
         <div style={{ maxHeight: "38%", overflowY: "auto", flexShrink: 0 }}>
           {folders.length === 0 ? (
             <p style={{ padding: "10px 14px", fontSize: "13px", color: "#9ca3af" }}>No folders yet</p>
@@ -530,10 +525,10 @@ function SavedProfiles() {
           )}
         </div>
 
-        {/* ── UNLOCKED CONTACTS ── */}
+        {/* Unlocked Contacts section */}
         <div ref={unlockedSectionRef} style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0, borderTop: "1px solid #ebebeb" }}>
           <div style={{ padding: "14px 14px 8px" }}>
-            <p style={S.folderLabel}>Unlocked Contacts</p>
+            <p style={{ fontSize: "10px", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>Unlocked Contacts</p>
           </div>
 
           <div style={{ padding: "0 12px 10px" }}>
@@ -556,11 +551,11 @@ function SavedProfiles() {
               onClick={() => { setActiveSection("unlocked"); setActiveFolder(null); setUnlockedView("all"); }}
               style={{ textAlign: "left", padding: "10px 12px", margin: "0 8px 4px", width: "calc(100% - 16px)", border: (activeSection === "unlocked" && unlockedView === "all") ? "1.5px solid #F26419" : "1.5px solid transparent", borderRadius: "10px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", background: (activeSection === "unlocked" && unlockedView === "all") ? "#FFF7F2" : "transparent" }}
             >
-            <span style={{ width: "38px", height: "38px", borderRadius: "10px", background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-  <svg width="19" height="19" fill="none" stroke="#6b7280" strokeWidth="1.8" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-  </svg>
-</span>
+              <span style={{ width: "38px", height: "38px", borderRadius: "10px", background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <svg width="19" height="19" fill="none" stroke="#6b7280" strokeWidth="1.8" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </span>
               <span style={{ minWidth: 0 }}>
                 <span style={{ display: "block", fontSize: "13px", fontWeight: 600, color: (activeSection === "unlocked" && unlockedView === "all") ? "#F26419" : "#374151" }}>All Unlocked</span>
                 <span style={{ display: "block", fontSize: "11px", color: "#9ca3af" }}>{totalUnlocked} unlocked candidates</span>
@@ -576,11 +571,11 @@ function SavedProfiles() {
                   onClick={() => { setActiveSection("unlocked"); setActiveFolder(null); setUnlockedView(folder.id); }}
                   style={{ width: "100%", textAlign: "left", padding: "9px 12px", border: "none", cursor: "pointer", display: "flex", alignItems: "flex-start", gap: "10px", background: active ? "#fff3ec" : "transparent", borderLeft: active ? "3px solid #F26419" : "3px solid transparent" }}
                 >
-                 <span style={{ width: "38px", height: "38px", borderRadius: "10px", background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-  <svg width="19" height="19" fill="none" stroke={active ? "#F26419" : "#6b7280"} strokeWidth="1.8" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-  </svg>
-</span>
+                  <span style={{ width: "38px", height: "38px", borderRadius: "10px", background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <svg width="19" height="19" fill="none" stroke={active ? "#F26419" : "#6b7280"} strokeWidth="1.8" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </span>
                   <span style={{ minWidth: 0 }}>
                     <span style={{ display: "block", fontSize: "13px", fontWeight: active ? 600 : 500, color: active ? "#F26419" : "#374151", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{folder.title}</span>
                     <span style={{ display: "block", fontSize: "11px", color: "#9ca3af" }}>{count} unlocked candidates{folder.updatedLabel ? ` · ${folder.updatedLabel}` : ""}</span>
@@ -590,7 +585,7 @@ function SavedProfiles() {
             })}
 
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 14px 8px" }}>
-              <p style={{ ...S.folderLabel, margin: 0 }}>Recent Unlocks</p>
+              <p style={{ fontSize: "10px", fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>Recent Unlocks</p>
               {recentUnlocks.length > 0 && (
                 <button onClick={() => { setActiveSection("unlocked"); setActiveFolder(null); setUnlockedView("all"); }} style={{ background: "none", border: "none", color: "#F26419", fontSize: "11px", fontWeight: 600, cursor: "pointer", fontFamily: "inherit", padding: 0 }}>View All</button>
               )}
@@ -617,15 +612,23 @@ function SavedProfiles() {
         </div>
       </div>
 
-      {/* Main content */}
-      <div style={S.main}>
-        <div style={S.mainHeader}>
-          <h1 style={S.mainTitle}>{headerTitle}</h1>
-          <p style={S.mainSub}>{headerCount} {headerNoun}</p>
+      {/* ── Main content (center column) ── */}
+      <div style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        minWidth: 0,
+        height: "100vh",             /* full height */
+        overflow: "hidden",          /* let inner sections scroll */
+      }}>
+        {/* Header — fixed at top of this column */}
+        <div style={{ background: "#fff", borderBottom: "1px solid #ebebeb", padding: "16px 28px 14px", flexShrink: 0 }}>
+          <h1 style={{ margin: 0, fontSize: "22px", fontWeight: 700, color: "#111827" }}>{headerTitle}</h1>
+          <p style={{ margin: "3px 0 0", fontSize: "13px", color: "#6b7280" }}>{headerCount} {headerNoun}</p>
         </div>
 
-        {/* Search + sort */}
-        <div style={S.searchBar}>
+        {/* Search + sort bar */}
+        <div style={{ background: "#fff", borderBottom: "1px solid #ebebeb", padding: "10px 28px", display: "flex", gap: "16px", alignItems: "center", flexShrink: 0 }}>
           <div style={{ position: "relative", flex: 1, maxWidth: "420px" }}>
             <svg width="14" height="14" fill="none" stroke="#9ca3af" strokeWidth="2" viewBox="0 0 24 24" style={{ position: "absolute", left: "11px", top: "50%", transform: "translateY(-50%)" }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
@@ -653,8 +656,8 @@ function SavedProfiles() {
           </div>
         </div>
 
-        {/* Candidates */}
-        <div style={S.candidateList}>
+        {/* Candidate list — this section scrolls */}
+        <div style={{ flex: 1, overflowY: "auto", padding: "16px 28px", display: "flex", flexDirection: "column", gap: "12px" }}>
           {filteredCandidates.length === 0 ? (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", color: "#9ca3af", gap: "12px" }}>
               <svg width="48" height="48" fill="none" stroke="#d1d5db" strokeWidth="1.2" viewBox="0 0 24 24">
@@ -674,7 +677,6 @@ function SavedProfiles() {
             </div>
           ) : (
             filteredCandidates.map((candidate) => {
-              console.log("Saved candidate:", candidate);
               const isSelected = selectedCandidate && getCandidateId(selectedCandidate) === getCandidateId(candidate);
               const savedLabel = getSavedLabel(candidate);
               const skills = getSkills(candidate);
@@ -684,62 +686,41 @@ function SavedProfiles() {
               return (
                 <div
                   key={getCandidateId(candidate)}
-                  onClick={() => {
-                    setSelectedCandidate(candidate);
-                    setDetailOpen(true);
-                  }}
+                  onClick={() => { setSelectedCandidate(candidate); setDetailOpen(true); }}
                   style={{ background: "#fff", border: `1px solid ${isSelected ? "#F26419" : "#e8e8e8"}`, borderRadius: "12px", padding: "18px 20px", cursor: "pointer", boxShadow: isSelected ? "0 0 0 1px #F26419" : "none", transition: "border-color 0.15s" }}
                 >
                   <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-
-                    {/* LEFT column: avatar + identity + tags + desc + remove */}
                     <div style={{ display: "flex", gap: "12px", alignItems: "flex-start", flex: 1, minWidth: 0 }}>
                       {candidate.avatar ? (
                         <img src={candidate.avatar} alt={candidate.name} style={{ width: "46px", height: "46px", borderRadius: "50%", objectFit: "cover", flexShrink: 0, background: "#f0d9c8" }} onError={(e) => { e.target.style.display = "none"; }} />
                       ) : (
                         <AvatarInitials name={candidate.name} size={46} />
                       )}
-
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        {/* Name + LinkedIn + saved timestamp */}
                         <div style={{ display: "flex", alignItems: "center", gap: "7px", flexWrap: "wrap" }}>
                           <span style={{ fontSize: "15px", fontWeight: 700, color: "#111827" }}>{candidate.name}</span>
                           <LinkedInBadgeFilled slug={candidate.fullProfile?.linkedin_slug} size={15} />
-                          {savedLabel && (
-                            <span style={{ fontSize: "11px", color: "#9ca3af" }}>{savedLabel}</span>
-                          )}
+                          {savedLabel && <span style={{ fontSize: "11px", color: "#9ca3af" }}>{savedLabel}</span>}
                         </div>
-
-                        {/* Title */}
                         <p style={{ margin: "4px 0 4px", fontSize: "13px", fontWeight: 500, color: "#374151" }}>{candidate.title}</p>
-
-                        {/* Location + experience inline */}
                         <p style={{ margin: 0, fontSize: "11px", color: "#9ca3af", display: "flex", alignItems: "center", gap: "10px" }}>
                           <span>📍 {candidate.location}</span>
-                          {candidate.experienceYears || candidate.experience ? (
+                          {(candidate.experienceYears || candidate.experience) && (
                             <span style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}>
                               <svg width="12" height="12" fill="none" stroke="#9ca3af" strokeWidth="1.6" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg>
                               {candidate.experienceYears || expLabel}
                             </span>
-                          ) : null}
+                          )}
                         </p>
-
-                        {/* Skill tags */}
                         <div style={{ display: "flex", flexWrap: "wrap", gap: "7px", margin: "11px 0 0" }}>
                           {skills.map((s, i) => <SkillTag key={i} label={s} />)}
                         </div>
-
-                        {/* Description */}
                         <p style={{ margin: "11px 0 0", fontSize: "12px", color: "#555", lineHeight: "1.6", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                           {candidate.fullProfile?.summary || candidate.description}
                         </p>
-
-                        {/* Read more */}
                         <button onClick={(e) => { e.stopPropagation(); setSelectedCandidate(candidate); setDetailOpen(true); }} style={{ marginTop: "6px", padding: 0, background: "none", border: "none", color: "#374151", fontSize: "12px", fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                           Read more
                         </button>
-
-                        {/* Remove button */}
                         <div style={{ marginTop: "12px" }}>
                           <button onClick={(e) => { e.stopPropagation(); removeCandidate(candidate); }} style={{ fontSize: "13px", color: "#F26419", background: "#fff", border: "1px solid #F26419", borderRadius: "8px", cursor: "pointer", padding: "7px 20px", fontWeight: 600, fontFamily: "inherit" }}>
                             Remove
@@ -748,23 +729,16 @@ function SavedProfiles() {
                       </div>
                     </div>
 
-                    {/* RIGHT column: Best Fit pills + Why Match */}
                     <div style={{ width: "190px", flexShrink: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
                       <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-                        <span style={{ fontSize: "11px", fontWeight: 600, padding: "3px 12px", borderRadius: "20px", background: "#dcfce7", color: "#15803d", whiteSpace: "nowrap" }}>
-                          {matchLevel}
-                        </span>
-                        <span style={{ fontSize: "11px", fontWeight: 600, padding: "3px 12px", borderRadius: "20px", background: "#f3e8ff", color: "#7e22ce", whiteSpace: "nowrap" }}>
-                          {expLabel}
-                        </span>
+                        <span style={{ fontSize: "11px", fontWeight: 600, padding: "3px 12px", borderRadius: "20px", background: "#dcfce7", color: "#15803d", whiteSpace: "nowrap" }}>{matchLevel}</span>
+                        <span style={{ fontSize: "11px", fontWeight: 600, padding: "3px 12px", borderRadius: "20px", background: "#f3e8ff", color: "#7e22ce", whiteSpace: "nowrap" }}>{expLabel}</span>
                       </div>
-
                       <div>
                         <p style={{ margin: "0 0 6px", fontSize: "12px", fontWeight: 700, color: "#111827" }}>Why Match?</p>
                         {whyMatch.map((w, i) => <WhyMatchRow key={i} label={w.label} ok={w.ok} />)}
                       </div>
                     </div>
-
                   </div>
                 </div>
               );
@@ -773,11 +747,33 @@ function SavedProfiles() {
         </div>
       </div>
 
-      {/* ── RIGHT DETAIL PANEL ── */}
+      {/* ── RIGHT DETAIL PANEL — true flush sidebar column ── */}
       {detailOpen && selectedCandidate && (
-        <div className="rp-wrap" style={{ width: "330px", position: "relative", borderRadius: 0, borderLeft: "1px solid #ebebeb", borderTop: "none", borderRight: "none", borderBottom: "none", boxShadow: "none", top: 0, maxHeight: "100vh" }}>
+        <div style={{
+    width: "360px",
+    flexShrink: 0,
+    height: "100%",
+    overflowY: "auto",
+    background: "#f8f9fa",                    /* CHANGE: light gray bg */
+    padding: "16px",                          /* ADD: outer spacing */
+    boxSizing: "border-box",                  /* ADD: padding included in width */
+    display: "flex",                          /* ADD */
+    flexDirection: "column",                  /* ADD */
+  }}>
+    {/* CARD WRAPPER */}
+    <div style={{
+      background: "#fff",
+      borderRadius: "16px",
+      boxShadow: "0 4px 20px rgba(0,0,0,.06)",
+      flex: 1,
+      display: "flex",
+      flexDirection: "column",
+      overflow: "hidden",
+    }}>
+      {/* SCROLLABLE CONTENT INSIDE CARD */}
+      <div style={{ flex: 1, overflowY: "auto" }}>
 
-          <div className="rp-header">
+          <div className="rp-header" style={{ padding: "20px 20px 0" }}>
             {selectedCandidate.avatar ? (
               <img src={selectedCandidate.avatar} alt={selectedCandidate.name} className="rp-avatar" onError={(e) => { e.target.style.display = "none"; }} />
             ) : (
@@ -794,7 +790,6 @@ function SavedProfiles() {
             <button className="rp-close" onClick={() => setDetailOpen(false)}>×</button>
           </div>
 
-          {/* Contact Details */}
           <div className="rp-section">
             <h4 className="rp-section-title">Contact Details</h4>
 
@@ -803,10 +798,7 @@ function SavedProfiles() {
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1 19.79 19.79 0 0 1 1.61 4.53 2 2 0 0 1 3.6 2.36h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
               </svg>
               {isUnlocked ? (
-                <>
-                  <span className="rp-ci-val">{phone || "Not Available"}</span>
-                  <ContactCheck />
-                </>
+                <><span className="rp-ci-val">{phone || "Not Available"}</span><ContactCheck /></>
               ) : (
                 <span className="rp-ci-blur rp-ci-blur--phone" />
               )}
@@ -818,10 +810,7 @@ function SavedProfiles() {
                 <polyline points="22,6 12,13 2,6" />
               </svg>
               {isUnlocked ? (
-                <>
-                  <span className="rp-ci-val">{emailVal || "Not Available"}</span>
-                  <ContactCheck />
-                </>
+                <><span className="rp-ci-val">{emailVal || "Not Available"}</span><ContactCheck /></>
               ) : (
                 <span className="rp-ci-blur rp-ci-blur--email" />
               )}
@@ -834,12 +823,7 @@ function SavedProfiles() {
                 <circle cx="4" cy="4" r="2" />
               </svg>
               {isUnlocked && linkedinSlug ? (
-                <>
-                  <a href={`https://linkedin.com/in/${linkedinSlug}`} target="_blank" rel="noreferrer" className="rp-ci-val rp-ci-link">
-                    linkedin.com/in/{linkedinSlug}
-                  </a>
-                  <ContactCheck />
-                </>
+                <><a href={`https://linkedin.com/in/${linkedinSlug}`} target="_blank" rel="noreferrer" className="rp-ci-val rp-ci-link">linkedin.com/in/{linkedinSlug}</a><ContactCheck /></>
               ) : (
                 <span className="rp-ci-blur rp-ci-blur--linkedin" />
               )}
@@ -872,6 +856,8 @@ function SavedProfiles() {
               <Timeline items={buildEducation(selectedCandidate)} />
             </div>
           )}
+        </div>
+        </div>
         </div>
       )}
 

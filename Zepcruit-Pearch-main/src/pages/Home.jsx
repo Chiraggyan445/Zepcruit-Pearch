@@ -23,8 +23,6 @@ const getCandidateKey = (candidate) => {
 
 const UNLOCK_COST = 450;
 
-/* ── SVG ICONS ── */
-
 function ZepCoinIcon({ size = 22 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -35,7 +33,6 @@ function ZepCoinIcon({ size = 22 }) {
   );
 }
 
-/* Saved icon — "Bookmark Streamline Core.svg" (imported), tinted via currentColor */
 function SavedIcon({ active = false }) {
   return (
     <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ color: active ? "#FF6B1A" : "#555555" }}>
@@ -44,7 +41,6 @@ function SavedIcon({ active = false }) {
   );
 }
 
-/* Unlocked icon — "Unlock Streamline Unicons.svg" (imported), tinted via currentColor */
 function UnlockedIcon({ active = false }) {
   return (
     <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ color: active ? "#FF6B1A" : "#555555" }}>
@@ -53,7 +49,6 @@ function UnlockedIcon({ active = false }) {
   );
 }
 
-/* ── PROMPT COMPONENT ── */
 function PromptBox({ role, setRole, experience, setExperience, location, setLocation, degree, setDegree, skills, setSkills, limit, setLimit, mustHaveKeywords, setMustHaveKeywords, handleSearch, loading, isLoggedIn, setShowLogin, industry, setIndustry }) {
   return (
     <div className="prompt-wrapper">
@@ -74,7 +69,7 @@ function PromptBox({ role, setRole, experience, setExperience, location, setLoca
           </div>
           <div className="prompt-line">
             <span>education background of</span>
-            <input className="inline-input degree-input" value={degree} onChange={(e) => setDegree(e.target.value)} placeholder="B. Des, B. E" />
+            <input className="inline-input degree-input" value={degree} onChange={(e) => setDegree(e.target.value)} placeholder="Degree" />
             <span>with skills such as</span>
           </div>
           <div className="prompt-line">
@@ -86,7 +81,7 @@ function PromptBox({ role, setRole, experience, setExperience, location, setLoca
           <div className="prompt-bottom-left">
             <label className="prompt-field-label">Other Attributes or Keywords</label>
             <div className="keywords-textarea-wrap">
-              <textarea className="keywords-textarea" value={mustHaveKeywords} onChange={(e) => { if (e.target.value.length <= 200) setMustHaveKeywords(e.target.value); }} placeholder="Figma, Design system, Collaboration" rows={3} />
+              <textarea className="keywords-textarea" value={mustHaveKeywords} onChange={(e) => { if (e.target.value.length <= 200) setMustHaveKeywords(e.target.value); }} placeholder="Other Keywords..." rows={3} />
               <span className="keyword-char-count">{mustHaveKeywords.length}/200</span>
             </div>
             <p className="keywords-hint">Add comma separated keywords for better results</p>
@@ -108,7 +103,6 @@ function PromptBox({ role, setRole, experience, setExperience, location, setLoca
   );
 }
 
-/* ── FolderIcon ── */
 function FolderIcon({ active = false }) {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill={active ? "#FFF1E9" : "none"} stroke={active ? "#F26419" : "#9ca3af"} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -117,7 +111,6 @@ function FolderIcon({ active = false }) {
   );
 }
 
-/* ── FOLDER PICKER — serves both Save and post-Unlock flows ── */
 function FolderPickerModal({ candidate, folders, onCancel, onContinue, mode = "save" }) {
   const [selectedId, setSelectedId] = useState(folders[0]?.id || null);
   const [creating, setCreating] = useState(false);
@@ -142,12 +135,9 @@ function FolderPickerModal({ candidate, folders, onCancel, onContinue, mode = "s
     <div className="modal-overlay" onClick={onCancel}>
       <div className="folder-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-btn" onClick={onCancel}>×</button>
-
         <h3 className="folder-modal-title">{title}</h3>
         <p className="folder-modal-sub">{sub}</p>
-
         <p className="folder-modal-label">SAVED PROFILES</p>
-
         <div className="folder-list">
           {folders.length === 0 && !creating && (
             <p className="folder-empty">No saved profiles yet — create one below.</p>
@@ -155,11 +145,7 @@ function FolderPickerModal({ candidate, folders, onCancel, onContinue, mode = "s
           {folders.map((f) => {
             const active = !creating && selectedId === f.id;
             return (
-              <button
-                key={f.id}
-                className={`folder-row ${active ? "folder-row--active" : ""}`}
-                onClick={() => { setCreating(false); setSelectedId(f.id); }}
-              >
+              <button key={f.id} className={`folder-row ${active ? "folder-row--active" : ""}`} onClick={() => { setCreating(false); setSelectedId(f.id); }}>
                 <span className="folder-row-left">
                   <FolderIcon active={active} />
                   <span className="folder-row-text">
@@ -172,43 +158,24 @@ function FolderPickerModal({ candidate, folders, onCancel, onContinue, mode = "s
             );
           })}
         </div>
-
-        {/* Create new profile */}
-        <button
-          className={`folder-create ${creating ? "folder-create--open" : ""}`}
-          onClick={() => { setCreating(true); setSelectedId(null); }}
-        >
+        <button className={`folder-create ${creating ? "folder-create--open" : ""}`} onClick={() => { setCreating(true); setSelectedId(null); }}>
           <span>CREATE NEW PROFILE</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </button>
         {creating && (
-          <input
-            className="folder-create-input"
-            autoFocus
-            placeholder="New profile name"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-          />
+          <input className="folder-create-input" autoFocus placeholder="New profile name" value={newName} onChange={(e) => setNewName(e.target.value)} />
         )}
-
         <div className="folder-modal-footer">
           <button className="folder-cancel" onClick={onCancel}>Cancel</button>
-          <button
-            className={`folder-save ${!canContinue ? "folder-save--disabled" : ""}`}
-            onClick={canContinue ? handleContinue : undefined}
-            disabled={!canContinue}
-          >
-            {cta}
-          </button>
+          <button className={`folder-save ${!canContinue ? "folder-save--disabled" : ""}`} onClick={canContinue ? handleContinue : undefined} disabled={!canContinue}>{cta}</button>
         </div>
       </div>
     </div>
   );
 }
 
-/* ── STEP 1: PAY CONFIRM MODAL ── */
 function UnlockModal({ candidate, onConfirm, onCancel, coins }) {
   if (!candidate) return null;
   const canAfford = coins >= UNLOCK_COST;
@@ -217,51 +184,32 @@ function UnlockModal({ candidate, onConfirm, onCancel, coins }) {
     <div className="modal-overlay" onClick={onCancel}>
       <div className="unlock-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-btn" onClick={onCancel}>×</button>
-
         <div className="unlock-modal-badge-row">
           <span className="unlock-priority-badge">{priorityLabel}</span>
         </div>
-
         <div className="unlock-modal-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F26419" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>
         </div>
-
         <h3 className="unlock-modal-title">Unlock Contact Details</h3>
-        <p className="unlock-modal-desc">
-          <strong>{candidate.name}</strong>'s contact info will be added permanently to your account.
-        </p>
-
-        {!canAfford && (
-          <p className="unlock-modal-error">Insufficient ZepCoins. You need {UNLOCK_COST} coins.</p>
-        )}
-
-        <button
-          className={`unlock-confirm-btn ${!canAfford ? "unlock-confirm-btn--disabled" : ""}`}
-          onClick={canAfford ? onConfirm : undefined}
-          disabled={!canAfford}
-        >
-          <span className="unlock-confirm-coin">
-            <ZepCoinIcon size={22} />
-            <span>{UNLOCK_COST}</span>
-          </span>
+        <p className="unlock-modal-desc"><strong>{candidate.name}</strong>'s contact info will be added permanently to your account.</p>
+        {!canAfford && <p className="unlock-modal-error">Insufficient ZepCoins. You need {UNLOCK_COST} coins.</p>}
+        <button className={`unlock-confirm-btn ${!canAfford ? "unlock-confirm-btn--disabled" : ""}`} onClick={canAfford ? onConfirm : undefined} disabled={!canAfford}>
+          <span className="unlock-confirm-coin"><ZepCoinIcon size={22} /><span>{UNLOCK_COST}</span></span>
           <span className="unlock-confirm-label">UNLOCK CONTACT DETAILS</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="9 18 15 12 9 6"/>
-          </svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
     </div>
   );
 }
 
-/* ── AVATAR INITIALS ── */
 function AvatarInitials({ name, size = 48 }) {
   const initials = name ? name.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase() : "?";
   const colors = ["#E879A0","#A78BFA","#60A5FA","#34D399","#FB923C","#F472B6","#818CF8"];
-  const color  = colors[(name?.charCodeAt(0) || 0) % colors.length];
+  const color = colors[(name?.charCodeAt(0) || 0) % colors.length];
   return (
     <div style={{ width: size, height: size, borderRadius: "50%", background: color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: size * 0.36, fontWeight: 700, color: "#fff" }}>
       {initials}
@@ -269,7 +217,6 @@ function AvatarInitials({ name, size = 48 }) {
   );
 }
 
-/* ── GREEN CHECK CIRCLE (Image 2 — right of each contact row) ── */
 function ContactCheck() {
   return (
     <span className="rp-ci-check">
@@ -280,56 +227,34 @@ function ContactCheck() {
   );
 }
 
-/* ── CONTACT SECTION — exact Image 2 ── */
 function ContactSection({ candidate, unlockedKeys, onRequestUnlock, stopProp = false }) {
   const isUnlocked = unlockedKeys.has(getCandidateKey(candidate));
   const phone    = candidate.fullProfile?.phone_numbers?.[0];
   const email    = candidate.fullProfile?.best_personal_email;
   const linkedin = candidate.fullProfile?.linkedin_slug;
-
   return (
     <div className="rp-section">
       <h4 className="rp-section-title">Contact Details</h4>
-
-      {/* Phone */}
       <div className="rp-ci-row">
         <svg className="rp-ci-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1 19.79 19.79 0 0 1 1.61 4.53 2 2 0 0 1 3.6 2.36h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
         </svg>
-        {isUnlocked
-          ? <><span className="rp-ci-val">{phone || "Not Available"}</span><ContactCheck /></>
-          : <span className="rp-ci-blur rp-ci-blur--phone" />
-        }
+        {isUnlocked ? <><span className="rp-ci-val">{phone || "Not Available"}</span><ContactCheck /></> : <span className="rp-ci-blur rp-ci-blur--phone" />}
       </div>
-
-      {/* Email */}
       <div className="rp-ci-row">
         <svg className="rp-ci-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
         </svg>
-        {isUnlocked
-          ? <><span className="rp-ci-val">{email || "Not Available"}</span><ContactCheck /></>
-          : <span className="rp-ci-blur rp-ci-blur--email" />
-        }
+        {isUnlocked ? <><span className="rp-ci-val">{email || "Not Available"}</span><ContactCheck /></> : <span className="rp-ci-blur rp-ci-blur--email" />}
       </div>
-
-      {/* LinkedIn */}
       <div className="rp-ci-row">
         <svg className="rp-ci-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
         </svg>
-        {isUnlocked && linkedin
-          ? <><a href={`https://linkedin.com/in/${linkedin}`} target="_blank" rel="noreferrer" className="rp-ci-val rp-ci-link">linkedin.com/in/{linkedin}</a><ContactCheck /></>
-          : <span className="rp-ci-blur rp-ci-blur--linkedin" />
-        }
+        {isUnlocked && linkedin ? <><a href={`https://linkedin.com/in/${linkedin}`} target="_blank" rel="noreferrer" className="rp-ci-val rp-ci-link">linkedin.com/in/{linkedin}</a><ContactCheck /></> : <span className="rp-ci-blur rp-ci-blur--linkedin" />}
       </div>
-
-      {/* Unlock button */}
       {!isUnlocked && (
-        <button
-          className="rp-unlock-btn"
-          onClick={(e) => { if (stopProp) e.stopPropagation(); onRequestUnlock(candidate); }}
-        >
+        <button className="rp-unlock-btn" onClick={(e) => { if (stopProp) e.stopPropagation(); onRequestUnlock(candidate); }}>
           Unlock Contact
         </button>
       )}
@@ -337,26 +262,18 @@ function ContactSection({ candidate, unlockedKeys, onRequestUnlock, stopProp = f
   );
 }
 
-/* ── SUMMARY SECTION ── */
 function SummarySection({ text }) {
   const [expanded, setExpanded] = useState(false);
   const SHORT = 180;
   const isLong = text?.length > SHORT;
   return (
     <div className="rp-summary">
-      <p className="rp-summary-text">
-        {expanded || !isLong ? text : text.slice(0, SHORT) + "..."}
-      </p>
-      {isLong && (
-        <button className="rp-read-more" onClick={() => setExpanded(e => !e)}>
-          {expanded ? "Show less" : "Read more"}
-        </button>
-      )}
+      <p className="rp-summary-text">{expanded || !isLong ? text : text.slice(0, SHORT) + "..."}</p>
+      {isLong && <button className="rp-read-more" onClick={() => setExpanded(e => !e)}>{expanded ? "Show less" : "Read more"}</button>}
     </div>
   );
 }
 
-/* ── TIMELINE (Experience / Education) — connected dots, full detail ── */
 function Timeline({ items }) {
   return (
     <div className="rp-timeline">
@@ -378,7 +295,6 @@ function Timeline({ items }) {
   );
 }
 
-/* ── ZEPCOIN DROPDOWN ── */
 function ZepCoinDropdown({ coins }) {
   const [open, setOpen] = useState(false);
   return (
@@ -386,9 +302,7 @@ function ZepCoinDropdown({ coins }) {
       <button className="zepcoin-pill" onClick={() => setOpen(o => !o)}>
         <ZepCoinIcon size={22} />
         <span className="zepcoin-amount">{coins?.toLocaleString() || "0"}</span>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       {open && (
         <div className="zepcoin-dropdown">
@@ -406,7 +320,6 @@ function ZepCoinDropdown({ coins }) {
   );
 }
 
-/* ── MAIN APP ── */
 function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("zepcruit_auth") === "true");
   const [showLogin, setShowLogin]   = useState(false);
@@ -415,7 +328,7 @@ function Home() {
   const [error, setError]           = useState("");
   const [isSignup, setIsSignup]     = useState(false);
   const [name, setName]             = useState("");
-  const [, setSavedJobs]   = useState([]);
+  const [, setSavedJobs]            = useState([]);
 
   const [searched, setSearched] = useState(localStorage.getItem("search_completed") === "true");
   const [results, setResults]   = useState([]);
@@ -434,9 +347,9 @@ function Home() {
     return new Set(stored);
   });
 
-  const [unlockTarget, setUnlockTarget] = useState(null);   // step 2: pay modal
-  const [folderTarget, setFolderTarget] = useState(null);   // candidate for folder picker
-  const [folderMode, setFolderMode] = useState("save");      // "save" | "unlock"
+  const [unlockTarget, setUnlockTarget] = useState(null);
+  const [folderTarget, setFolderTarget] = useState(null);
+  const [folderMode, setFolderMode]     = useState("save");
 
   const [role, setRole]                         = useState("");
   const [experience, setExperience]             = useState("");
@@ -458,13 +371,8 @@ function Home() {
 
   useEffect(() => { setUnlockedCount(unlockedKeys.size); }, [unlockedKeys]);
 
-  // Clicking "Save Candidate" opens the folder picker (save mode)
-  const handleSaveCandidate = (candidate) => {
-    setFolderMode("save");
-    setFolderTarget(candidate);
-  };
+  const handleSaveCandidate = (candidate) => { setFolderMode("save"); setFolderTarget(candidate); };
 
-  // helper: save a candidate into a specific folder (by id/title)
   const saveCandidateToFolder = (candidate, folder) => {
     const existingFolders = JSON.parse(localStorage.getItem("saved_candidate_folders")) || [];
     const folderIndex = existingFolders.findIndex(f => f.id === folder.id);
@@ -478,10 +386,8 @@ function Home() {
     setSavedFolders([...existingFolders]);
   };
 
-  // STEP 1 — clicking "Unlock Contact" opens the pay modal (450)
   const handleRequestUnlock = (candidate) => setUnlockTarget(candidate);
 
-  // STEP 1 — pay & reveal contact, THEN open the folder picker
   const handleConfirmUnlock = async () => {
     if (!unlockTarget) return;
     const candidate = unlockTarget;
@@ -505,21 +411,18 @@ function Home() {
       newSet.add(candidateKey);
       setUnlockedKeys(newSet);
       localStorage.setItem("unlocked_keys", JSON.stringify([...newSet]));
-      // record unlock time + a lightweight snapshot for Recent Unlocks
       try {
         const times = JSON.parse(localStorage.getItem("unlock_times") || "{}");
         times[candidateKey] = { at: new Date().toISOString(), name: candidate.name, avatar: candidate.avatar || null };
         localStorage.setItem("unlock_times", JSON.stringify(times));
-      } catch { /* ignore */ }
+      } catch { }
       setZepCoins(c => Math.max(0, c - UNLOCK_COST));
     } catch (err) { console.error(err); }
     setUnlockTarget(null);
-    // STEP 2 — now choose which folder to file the unlocked candidate into
     setFolderMode("unlock");
     setFolderTarget(candidate);
   };
 
-  // Folder chosen — file the candidate (works for both save & unlock modes)
   const handleFolderChosen = (folder) => {
     if (folderTarget) saveCandidateToFolder(folderTarget, folder);
     setFolderTarget(null);
@@ -577,48 +480,21 @@ function Home() {
   useEffect(() => { if (!isLoggedIn) setSearched(false); }, [isLoggedIn]);
 
   const handleSearch = async () => {
-    const query = `
-Role: ${role}
-Experience: ${experience}
-Industry: ${industry}
-Location: ${location}
-Education: ${degree}
-Skills: ${skills}
-Other Attributes: ${mustHaveKeywords}
-`;
+    const query = `Role: ${role}\nExperience: ${experience}\nIndustry: ${industry}\nLocation: ${location}\nEducation: ${degree}\nSkills: ${skills}\nOther Attributes: ${mustHaveKeywords}`;
     if (!query.trim()) return;
     setLoading(true); setSearched(true); setResults([]); setSelected(null);
     try {
-      console.log("Limit selected:", limit);
-
-  console.log({
-    role,
-    experience,
-    industry,
-    location,
-    degree,
-    skills,
-    mustHaveKeywords,
-    limit
-  });
-      const res  = await fetch("https://zepcruit-backend.onrender.com/search", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
-  query,
-  role,
-  experience,
-  industry,
-  location,
-  degree,
-  skills,
-  mustHaveKeywords,
-  limit
-}) });
+      const res  = await fetch("https://zepcruit-backend.onrender.com/search", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query, role, experience, industry, location, degree, skills, mustHaveKeywords, limit })
+      });
       const data = await res.json();
       const apiResults = data?.search_results || [];
       const formatted = apiResults.map((item) => {
         const p  = item.profile || {};
         const qi = item.insights?.query_insights?.[0] || {};
-        const extractedEmail = p.best_personal_email || p.personal_emails?.[0] || p.business_emails?.[0] || p.emails?.[0] || p.email || p.summary?.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/)?.[0] || null;
-        const extractedPhones = p.phone_numbers?.length ? p.phone_numbers : p.phone_number ? [p.phone_number] : p.summary?.match(/\+?\d[\d\s()-]{8,}/g) || [];
+        const extractedEmail = p.best_personal_email || p.personal_emails?.[0] || p.business_emails?.[0] || p.emails?.[0] || p.email || null;
+        const extractedPhones = p.phone_numbers?.length ? p.phone_numbers : p.phone_number ? [p.phone_number] : [];
         return {
           searchedRole: role,
           name:         `${p.first_name || ""} ${p.last_name || ""}`.trim() || "Unknown",
@@ -657,11 +533,6 @@ Other Attributes: ${mustHaveKeywords}
       Email: c.fullProfile?.best_personal_email || "N/A",
       Phone: c.fullProfile?.phone_numbers?.join(", ") || "N/A",
       LinkedIn: c.fullProfile?.linkedin_slug ? `https://linkedin.com/in/${c.fullProfile.linkedin_slug}` : "",
-      Connections: c.fullProfile?.connections_count || "N/A",
-      Followers: c.fullProfile?.followers_count || "N/A",
-      Education: c.fullProfile?.educations?.map(e => `${e.major || ""} ${e.degree?.join(", ") || ""}`).join(" | ") || "",
-      Certifications: c.fullProfile?.certifications?.map(x => x.title).join(", ") || "",
-      Summary: c.fullProfile?.summary || "",
       "AI Score": c.score || 0,
       "Match Reason": c.rationale || "",
     }));
@@ -672,28 +543,17 @@ Other Attributes: ${mustHaveKeywords}
     saveAs(new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), `Candidates_${Date.now()}.xlsx`);
   };
 
-  /* Build timeline arrays from fullProfile */
   const buildExperience = (cand) =>
     (cand.fullProfile?.experiences || []).map((exp) => {
       const expRole = exp.company_roles?.[0];
       const dates = exp.date_range || (exp.start_date ? `${exp.start_date}${exp.end_date ? ` – ${exp.end_date}` : " – Present"}` : "");
-      return {
-        title: expRole?.company || exp.company || "Company",
-        subtitle: expRole?.title || exp.title || "",
-        dates,
-        desc: exp.description || "",
-      };
+      return { title: expRole?.company || exp.company || "Company", subtitle: expRole?.title || exp.title || "", dates, desc: exp.description || "" };
     });
 
   const buildEducation = (cand) =>
     (cand.fullProfile?.educations || []).map((edu) => {
       const dates = edu.date_range || (edu.start_date ? `${edu.start_date}${edu.end_date ? ` – ${edu.end_date}` : ""}` : "");
-      return {
-        title: edu.school || edu.institution || "",
-        subtitle: [edu.major, edu.degree?.join(", ")].filter(Boolean).join(", "),
-        dates,
-        desc: edu.description || "",
-      };
+      return { title: edu.school || edu.institution || "", subtitle: [edu.major, edu.degree?.join(", ")].filter(Boolean).join(", "), dates, desc: edu.description || "" };
     });
 
   return (
@@ -712,17 +572,13 @@ Other Attributes: ${mustHaveKeywords}
                 <span style={{ color: savedCount > 0 ? "#FF6B1A" : "#1a1a1a" }}>Saved</span>
                 {savedCount > 0 && <span className="nav-badge">{savedCount}</span>}
               </button>
-
               <button className="nav-icon-btn" onClick={() => navigate("/saved-profiles", { state: { view: "unlocked" } })}>
                 <UnlockedIcon active={unlockedCount > 0} />
                 <span style={{ color: unlockedCount > 0 ? "#FF6B1A" : "#1a1a1a" }}>Unlocked</span>
                 {unlockedCount > 0 && <span className="nav-badge">{unlockedCount}</span>}
               </button>
-
               <ZepCoinDropdown coins={zepCoins} />
-
-               <span className="nav-divider" />
-
+              <span className="nav-divider" />
               <div className="user">
                 <div className="avatar-small">
                   <img src={logo} alt="avatar" onError={(e) => { e.target.style.display = "none"; }} />
@@ -757,30 +613,58 @@ Other Attributes: ${mustHaveKeywords}
         </div>
       )}
 
-      {/* ── UNLOCK CONFIRM MODAL ── */}
-      {/* ── STEP 1: FOLDER PICKER ── */}
       <FolderPickerModal candidate={folderTarget} folders={savedFolders} mode={folderMode} onContinue={handleFolderChosen} onCancel={() => { setFolderTarget(null); setFolderMode("save"); }} />
-
-      {/* ── STEP 2: UNLOCK PAY MODAL ── */}
       <UnlockModal candidate={unlockTarget} coins={zepCoins} onConfirm={handleConfirmUnlock} onCancel={() => setUnlockTarget(null)} />
 
-      {/* ── HERO ── */}
-      <div className="hero">
-        <h1 className="hero-title">Find the <span>best candidates</span></h1>
-        <p className="hero-subtitle">Describe your ideal candidate and we'll do the rest</p>
-        <PromptBox {...{ role, setRole, experience, setExperience, location, setLocation, degree, setDegree, skills, setSkills, limit, setLimit, mustHaveKeywords, setMustHaveKeywords, handleSearch, loading, isLoggedIn, setShowLogin, industry, setIndustry }} />
-      </div>
+      {/* ── HERO (only shown when no results) ── */}
+      {!searched && (
+        <div className="hero">
+          <h1 className="hero-title">Find the <span>best candidates</span></h1>
+          <p className="hero-subtitle">Describe your ideal candidate and we'll do the rest</p>
+          <PromptBox {...{ role, setRole, experience, setExperience, location, setLocation, degree, setDegree, skills, setSkills, limit, setLimit, mustHaveKeywords, setMustHaveKeywords, handleSearch, loading, isLoggedIn, setShowLogin, industry, setIndustry }} />
+        </div>
+      )}
 
-      {/* ── RESULTS ── */}
+      {/* ── RESULTS — full viewport flex layout, same pattern as SavedProfiles ── */}
       {searched && (
-        <div className="results-section">
-          <div className="results-header">
-            <h2 className="candidate-section-title">Candidates</h2>
-            {results.length > 0 && <button className="download-btn" onClick={exportToExcel}>📥 Download Excel</button>}
-          </div>
+        <div style={{
+          display: "flex",
+          height: "calc(100vh - 60px)", /* subtract navbar height */
+          overflow: "hidden",
+          background: "#f8f9fa",
+        }}>
 
-          <div className={`candidates-layout ${selected ? "panel-open" : ""}`}>
-            <div className="candidate-list">
+          {/* ── Left: candidate list column ── */}
+          <div style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            minWidth: 0,
+            height: "100%",
+            overflow: "hidden",
+          }}>
+            {/* Results header */}
+            <div style={{ background: "#fff", borderBottom: "1px solid #ebebeb", padding: "16px 28px 12px", flexShrink: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 700, color: "#111827" }}>Candidates</h2>
+                {results.length > 0 && <p style={{ margin: "2px 0 0", fontSize: "13px", color: "#6b7280" }}>{results.length} results found</p>}
+              </div>
+              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                {results.length > 0 && (
+                  <button className="download-btn" onClick={exportToExcel}>📥 Download Excel</button>
+                )}
+                {/* Re-search button */}
+                <button
+                  onClick={() => { setSearched(false); setSelected(null); }}
+                  style={{ background: "#fff", border: "1.5px solid #e0e0e0", borderRadius: "8px", padding: "8px 16px", fontSize: "13px", fontWeight: 500, cursor: "pointer", color: "#374151", fontFamily: "inherit" }}
+                >
+                  ← New Search
+                </button>
+              </div>
+            </div>
+
+            {/* Scrollable candidate list */}
+            <div style={{ flex: 1, overflowY: "auto", padding: "16px 28px", display: "flex", flexDirection: "column", gap: "12px" }}>
               {loading ? (
                 <div className="candidate-loader-container">
                   <div className="ai-loader">
@@ -805,13 +689,17 @@ Other Attributes: ${mustHaveKeywords}
                     <div className="candidate-main">
                       <div className="candidate-info">
                         <div className="candidate-top">
-                          <img src={cand.avatar || "/avatar.png"} alt={cand.name} className="candidate-avatar" onError={(e) => { e.target.src = "/avatar.png"; }} />
+                          {cand.avatar
+                            ? <img src={cand.avatar} alt={cand.name} className="candidate-avatar" onError={(e) => { e.target.src = "/avatar.png"; }} />
+                            : <AvatarInitials name={cand.name} size={52} />
+                          }
                           <div>
                             <div className="candidate-name-row">
                               <h3>{cand.name}</h3>
-                              {cand.fullProfile?.linkedin_slug ? (
-                                <a href={`https://linkedin.com/in/${cand.fullProfile.linkedin_slug}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="linkedin-icon">in</a>
-                              ) : <span className="linkedin-icon">in</span>}
+                              {cand.fullProfile?.linkedin_slug
+                                ? <a href={`https://linkedin.com/in/${cand.fullProfile.linkedin_slug}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="linkedin-icon">in</a>
+                                : <span className="linkedin-icon">in</span>
+                              }
                             </div>
                             <p className="candidate-title">{cand.title}</p>
                             <p className="candidate-location">📍 {cand.location}</p>
@@ -828,8 +716,7 @@ Other Attributes: ${mustHaveKeywords}
                               </svg>
                               View Saved Candidate
                             </button>
-                          )
-                          : (
+                          ) : (
                             <button className="save-candidate-btn" onClick={(e) => { e.stopPropagation(); handleSaveCandidate(cand); }}>
                               Save Candidate
                             </button>
@@ -843,117 +730,74 @@ Other Attributes: ${mustHaveKeywords}
                           <span className="exp-badge">{cand.experience}</span>
                         </div>
                         <div className="match-list">
-                          {cand.insights?.length > 0 ? (
-                            cand.insights.map((insight, idx) => (
-                              <div key={idx} className={insight.match_level === "low" ? "match-fail" : "match-pass"}>{insight.short_rationale}</div>
-                            ))
-                          ) : <div className="match-pass">Matches search criteria</div>}
+                          {cand.insights?.length > 0
+                            ? cand.insights.map((insight, idx) => (
+                                <div key={idx} className={insight.match_level === "low" ? "match-fail" : "match-pass"}>{insight.short_rationale}</div>
+                              ))
+                            : <div className="match-pass">Matches search criteria</div>
+                          }
                         </div>
                       </div>
-
-                      {/* MOBILE PANEL */}
-                      {selected && getCandidateKey(selected) === getCandidateKey(cand) && (
-                        <div className="mobile-candidate-panel">
-                          <div className="rp-header">
-                            {cand.avatar
-                              ? <img src={cand.avatar} alt={cand.name} className="rp-avatar" onError={(e) => { e.target.style.display="none"; }} />
-                              : <AvatarInitials name={cand.name} size={52} />
-                            }
-                            <div className="rp-header-info">
-                              <div className="rp-name-row">
-                                <h3 className="rp-name">{cand.name}</h3>
-                                {cand.fullProfile?.linkedin_slug && (
-                                  <a href={`https://linkedin.com/in/${cand.fullProfile.linkedin_slug}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="panel-linkedin-btn">in</a>
-                                )}
-                              </div>
-                              <p className="rp-title">{cand.title}</p>
-                              <p className="rp-location">📍 {cand.location}</p>
-                            </div>
-                          </div>
-
-                          <ContactSection candidate={cand} unlockedKeys={unlockedKeys} onRequestUnlock={handleRequestUnlock} stopProp={true} />
-
-                          {(cand.fullProfile?.summary || cand.rationale) && (
-                            <div className="rp-section">
-                              <h4 className="rp-section-title">About</h4>
-                              <SummarySection text={cand.fullProfile?.summary || cand.rationale} />
-                            </div>
-                          )}
-
-                          {buildExperience(cand).length > 0 && (
-                            <div className="rp-section">
-                              <h4 className="rp-section-title">Experience</h4>
-                              <Timeline items={buildExperience(cand)} />
-                            </div>
-                          )}
-
-                          {buildEducation(cand).length > 0 && (
-                            <div className="rp-section">
-                              <h4 className="rp-section-title">Education</h4>
-                              <Timeline items={buildEducation(cand)} />
-                            </div>
-                          )}
-                        </div>
-                      )}
                     </div>
                   </div>
                 ))
               )}
             </div>
-
-            {/* ── RIGHT DETAIL PANEL ── */}
-            {selected && (
-              <div className="rp-wrap desktop-panel">
-
-                {/* Header */}
-                <div className="rp-header">
-                  {selected.avatar
-                    ? <img src={selected.avatar} alt={selected.name} className="rp-avatar" onError={(e) => { e.target.style.display="none"; }} />
-                    : <AvatarInitials name={selected.name} size={52} />
-                  }
-                  <div className="rp-header-info">
-                    <div className="rp-name-row">
-                      <h3 className="rp-name">{selected.name}</h3>
-                      {selected.fullProfile?.linkedin_slug && (
-                        <a href={`https://linkedin.com/in/${selected.fullProfile.linkedin_slug}`} target="_blank" rel="noopener noreferrer" className="panel-linkedin-btn">in</a>
-                      )}
-                    </div>
-                    <p className="rp-title">{selected.title}</p>
-                    <p className="rp-location">📍 {selected.location}</p>
-                  </div>
-                  <button className="rp-close" onClick={() => setSelected(null)}>×</button>
-                </div>
-
-                {/* Contact Details */}
-                <ContactSection candidate={selected} unlockedKeys={unlockedKeys} onRequestUnlock={handleRequestUnlock} />
-
-                {/* About */}
-                {(selected.fullProfile?.summary || selected.rationale) && (
-                  <div className="rp-section">
-                    <h4 className="rp-section-title">About</h4>
-                    <SummarySection text={selected.fullProfile?.summary || selected.rationale} />
-                  </div>
-                )}
-
-                {/* Experience */}
-                {buildExperience(selected).length > 0 && (
-                  <div className="rp-section">
-                    <h4 className="rp-section-title">Experience</h4>
-                    <Timeline items={buildExperience(selected)} />
-                  </div>
-                )}
-
-                {/* Education */}
-                {buildEducation(selected).length > 0 && (
-                  <div className="rp-section">
-                    <h4 className="rp-section-title">Education</h4>
-                    <Timeline items={buildEducation(selected)} />
-                  </div>
-                )}
-
-              </div>
-            )}
           </div>
+
+          {/* ── Right: detail panel — true flush sidebar, NO rp-wrap class ── */}
+          {selected && (
+            <div style={{
+              width: "360px",
+              flexShrink: 0,
+              height: "100%",
+              overflowY: "auto",
+              background: "#fff",
+              borderLeft: "1px solid #ebebeb",
+              /* No border-radius, no box-shadow, no position:sticky */
+            }}>
+              <div className="rp-header">
+                {selected.avatar
+                  ? <img src={selected.avatar} alt={selected.name} className="rp-avatar" onError={(e) => { e.target.style.display = "none"; }} />
+                  : <AvatarInitials name={selected.name} size={52} />
+                }
+                <div className="rp-header-info">
+                  <div className="rp-name-row">
+                    <h3 className="rp-name">{selected.name}</h3>
+                    {selected.fullProfile?.linkedin_slug && (
+                      <a href={`https://linkedin.com/in/${selected.fullProfile.linkedin_slug}`} target="_blank" rel="noopener noreferrer" className="panel-linkedin-btn">in</a>
+                    )}
+                  </div>
+                  <p className="rp-title">{selected.title}</p>
+                  <p className="rp-location">📍 {selected.location}</p>
+                </div>
+                <button className="rp-close" onClick={() => setSelected(null)}>×</button>
+              </div>
+
+              <ContactSection candidate={selected} unlockedKeys={unlockedKeys} onRequestUnlock={handleRequestUnlock} />
+
+              {(selected.fullProfile?.summary || selected.rationale) && (
+                <div className="rp-section">
+                  <h4 className="rp-section-title">About</h4>
+                  <SummarySection text={selected.fullProfile?.summary || selected.rationale} />
+                </div>
+              )}
+
+              {buildExperience(selected).length > 0 && (
+                <div className="rp-section">
+                  <h4 className="rp-section-title">Experience</h4>
+                  <Timeline items={buildExperience(selected)} />
+                </div>
+              )}
+
+              {buildEducation(selected).length > 0 && (
+                <div className="rp-section">
+                  <h4 className="rp-section-title">Education</h4>
+                  <Timeline items={buildEducation(selected)} />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>
